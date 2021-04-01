@@ -4,7 +4,7 @@ import flappy_env
 from stable_baselines3 import PPO
 
 def human_playing():
-	env = flappy_env.FlappyEnv()
+	env = flappy_env.FlappyEnv(server=False)
 	env.reset()
 	env.step(action=[])
 	while env.running:
@@ -20,10 +20,11 @@ def human_playing():
 	env.close()
 
 def ai_playing():
-	env = flappy_env.FlappyEnv()
+	env = flappy_env.FlappyEnv(server=True)
 	obs = env.reset()
 	model = PPO("MlpPolicy", env, verbose=1)
 	model.learn(total_timesteps=2e6)
+	model.save("firstgo")
 
 	for i in range(1000):
 	    action, _states = model.predict(obs, deterministic=True)
