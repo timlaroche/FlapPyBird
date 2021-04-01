@@ -37,9 +37,12 @@ class FlappyEnv(gym.Env):
 
 		if server == True:
 			os.environ["SDL_VIDEODRIVER"] = "dummy"
-			
+
 		self.action_space = spaces.Discrete(2) # Flap or not flap, this could be 1
-		self.observation_space = spaces.Box(low = np.array([0, 0, 0, 0, 0]), high = np.array([512, 0, -300, 0, -300]), dtype=np.uint8)
+		# self.observation_space = spaces.Box(low = np.array([0, 0, 0, 0, 0]), high = np.array([512, 0, -300, 0, -300]), dtype=np.uint8)
+		self.observation_space = gym.spaces.Box(-np.inf, np.inf,
+										shape=(2,),
+										dtype=np.float32)
 
 		pygame.init()
 		self.FPSCLOCK = pygame.time.Clock()
@@ -111,12 +114,12 @@ class FlappyEnv(gym.Env):
 		self.basex = 0
 		self.playery = int((SCREENHEIGHT - IMAGES['player'][0].get_height()) / 2) + 0
 		self.playerx = int((SCREENHEIGHT - IMAGES['player'][0].get_height()) / 2) + 0
-		self.playerHeight = 0
 		self.playerIndex = 0
 		self.score = 0
 		self.loopIter = 0
 		self.pipeVelX = -4
 		self.baseShift = IMAGES['base'].get_width() - IMAGES['background'].get_width()
+		self.playerHeight = IMAGES['player'][self.playerIndex].get_height()
 
 		# player velocity, max velocity, downward accleration, accleration on flap
 		self.playerVelY    =  -9   # player's velocity along Y, default same as playerFlapped
@@ -134,6 +137,7 @@ class FlappyEnv(gym.Env):
 		self.lowerPipes = []
 
 	def step(self, action):
+		pygame.event.pump()
 		basex = self.basex
 		reward = 0.0
 		obs = list()
@@ -161,6 +165,8 @@ class FlappyEnv(gym.Env):
 			# 	'playerRot': self.playerRot,
 			# 	'done': True
 			# }
+		else:
+			reward = 1
 
 		# check for score
 		playerMidPos = self.playerx + IMAGES['player'][0].get_width() / 2
@@ -237,7 +243,30 @@ class FlappyEnv(gym.Env):
 		## new obs, [height of bird, next upipex, next upipey, next lpipex, next lpipey]
 		obs.insert(0, self.playery)
 
-		return np.array(obs), reward, self.running, {} #obs, reward, done, info
+		return self.get_observation(), reward, self.running, {} #obs, reward, done, info
+
+	def get_observation(self):
+		up_pipe = low_pipe = None
+		h_dist = 0
+		for up_pipe, low_pipe in zip(self.upperPipes, self.lowerPipes):
+			h_dist = (low_pipe["x"] + 100 / 2 
+				- (self.playerx - 100 / 2))
+			h_dist += 3  # extra distance to compensate for the buggy hit-box
+			if h_dist >= 0:
+				break
+
+		upper_pipe_y = up_pipe["y"] + PIPEGAPSIZE
+		lower_pipe_y = low_pipe["y"]
+		player_y = self.playery
+
+		v_dist = (upper_pipe_y + lower_pipe_y) / 2 - (player_y
+													  + self.playerHeight/2)
+
+		return np.array([
+			h_dist,
+			v_dist,
+		])
+
 
 	def reset(self):
 		self.playery = int((SCREENHEIGHT - IMAGES['player'][0].get_height()) / 2) + 0
@@ -265,7 +294,7 @@ class FlappyEnv(gym.Env):
 			{'x': SCREENWIDTH + 200, 'y': newPipe1[1]['y']},
 			{'x': SCREENWIDTH + 200 + (SCREENWIDTH / 2), 'y': newPipe2[1]['y']},
 		]
-		return obs
+		return self.get_observation()
 
 	def render(self, mode='human'):
 		pygame.display.update()
