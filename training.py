@@ -24,6 +24,7 @@ def ai_playing():
 	obs = env.reset()
 	model = PPO("MlpPolicy", env, verbose=1)
 	model.learn(total_timesteps=2e6)
+	model.save("fixedbug")
 
 	for i in range(1000):
 		action = 0
