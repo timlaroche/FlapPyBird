@@ -34,6 +34,10 @@ class FlappyEnv(gym.Env):
 
 	def __init__(self, server):
 		super(FlappyEnv, self).__init__()
+
+		if server == True:
+			os.environ["SDL_VIDEODRIVER"] = "dummy"
+			
 		self.action_space = spaces.Discrete(2) # Flap or not flap, this could be 1
 		self.observation_space = spaces.Box(low = np.array([0, 0, 0, 0, 0]), high = np.array([512, 0, -300, 0, -300]), dtype=np.uint8)
 
@@ -42,9 +46,6 @@ class FlappyEnv(gym.Env):
 		self.SCREEN = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
 
 		pygame.display.set_caption('Flappy Bird')
-
-		if server == True:
-			os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 		# numbers sprites for score display
 		# image, sound and hitmask  dicts
