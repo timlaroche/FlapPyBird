@@ -20,10 +20,10 @@ def human_playing():
 		env.close()
 
 def ai_playing():
-	env = flappy_env.FlappyEnv(server=False)
+	env = flappy_env.FlappyEnv(server=True)
 	obs = env.reset()
 	model = PPO("MlpPolicy", env, verbose=1)
-	model.learn(total_timesteps=200000)
+	model.learn(total_timesteps=2e6)
 
 	for i in range(1000):
 		action = 0
