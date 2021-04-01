@@ -17,20 +17,24 @@ def human_playing():
 			info: {info}
 			""")
 		env.render()
-	env.close()
+		env.close()
 
 def ai_playing():
-	env = flappy_env.FlappyEnv(server=True)
+	env = flappy_env.FlappyEnv(server=False)
 	obs = env.reset()
 	model = PPO("MlpPolicy", env, verbose=1)
-	model.learn(total_timesteps=2e6)
-	model.save("firstgo")
+	model.learn(total_timesteps=200000)
 
 	for i in range(1000):
-	    action, _states = model.predict(obs, deterministic=True)
-	    obs, reward, done, info = env.step(action)
-	    if done:
-	      obs = env.reset()
-	env.close()
+		action = 0
+		if i % 50 == 0:
+			action = 1
+		else:
+			action = 0
+		obs, reward, done, info = env.step(action)
+		if done:
+			print(done)
+			env.reset()
+		env.render()
 
 ai_playing()

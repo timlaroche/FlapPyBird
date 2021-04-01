@@ -39,10 +39,10 @@ class FlappyEnv(gym.Env):
 			os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 		self.action_space = spaces.Discrete(2) # Flap or not flap, this could be 1
-		# self.observation_space = spaces.Box(low = np.array([0, 0, 0, 0, 0]), high = np.array([512, 0, -300, 0, -300]), dtype=np.uint8)
-		self.observation_space = gym.spaces.Box(-np.inf, np.inf,
-										shape=(2,),
-										dtype=np.float32)
+		self.observation_space = spaces.Box(low = np.array([-np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf]), high = np.array([np.inf, np.inf, np.inf, np.inf, np.inf, np.inf]), dtype=np.uint8)
+		# self.observation_space = gym.spaces.Box(-np.inf, np.inf,
+		# 								shape=(2,),
+		# 								dtype=np.float32)
 
 		pygame.init()
 		self.FPSCLOCK = pygame.time.Clock()
@@ -243,29 +243,13 @@ class FlappyEnv(gym.Env):
 		## new obs, [height of bird, next upipex, next upipey, next lpipex, next lpipey]
 		obs.insert(0, self.playery)
 
-		return self.get_observation(), reward, self.running, {} #obs, reward, done, info
+		return self.get_observation(), reward, not self.running, {} #obs, reward, done, info
 
 	def get_observation(self):
-		up_pipe = low_pipe = None
-		h_dist = 0
-		for up_pipe, low_pipe in zip(self.upperPipes, self.lowerPipes):
-			h_dist = (low_pipe["x"] + 100 / 2 
-				- (self.playerx - 100 / 2))
-			h_dist += 3  # extra distance to compensate for the buggy hit-box
-			if h_dist >= 0:
-				break
+		# [current y value, xcoord of mid pipe, y coord of mid pipe]
+		for i, (uPipe, lPipe) in enumerate(zip(self.upperPipes, self.lowerPipes)):
+			return[self.playery, self.playerx, uPipe['x'], uPipe['y'], lPipe['x'], lPipe['y']]
 
-		upper_pipe_y = up_pipe["y"] + PIPEGAPSIZE
-		lower_pipe_y = low_pipe["y"]
-		player_y = self.playery
-
-		v_dist = (upper_pipe_y + lower_pipe_y) / 2 - (player_y
-													  + self.playerHeight/2)
-
-		return np.array([
-			h_dist,
-			v_dist,
-		])
 
 
 	def reset(self):
@@ -275,6 +259,7 @@ class FlappyEnv(gym.Env):
 		self.playerIndex = 0
 		self.playerIndexGen = cycle([0, 1, 2, 1])
 		self.score = 0
+		self.running = True
 		obs = [0, 0, 0, 0, 0]
 
 		baseShift = IMAGES['base'].get_width() - IMAGES['background'].get_width()
