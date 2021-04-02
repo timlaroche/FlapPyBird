@@ -37,4 +37,4 @@ def ai_playing():
 		if done:
 			env.reset()
 
-human_playing()
+ai_playing()
