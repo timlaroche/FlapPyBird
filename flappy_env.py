@@ -253,7 +253,7 @@ class FlappyEnv(gym.Env):
 	def get_observation(self):
 		# [current y value, xcoord of mid pipe, y coord of mid pipe]
 		for i, (uPipe, lPipe) in enumerate(zip(self.upperPipes, self.lowerPipes)):
-			print(f"{[self.playery, lPipe['y']-self.playery, uPipe['x']]}")
+			# print(f"{[self.playery, lPipe['y']-self.playery, uPipe['x']]}")
 			return[self.playery, lPipe['y']-self.playery, uPipe['x']]
 			# return[self.playery, self.playerx, uPipe['x'], uPipe['y'], lPipe['x'], lPipe['y'], lPipe['y']-self.playery]
 
