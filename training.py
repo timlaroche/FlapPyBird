@@ -24,7 +24,7 @@ def human_playing():
 def ai_playing():
 	env = flappy_env.FlappyEnv(server=True)
 	obs = env.reset()
-	model = PPO("MlpPolicy", env, verbose=1)
+	model = PPO("MlpPolicy", env, verbose=1, learning_rate=1e-5, )
 	model.learn(total_timesteps=3e6)
 	model.save("fixedreward")
 
