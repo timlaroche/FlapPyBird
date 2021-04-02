@@ -38,7 +38,7 @@ class FlappyEnv(gym.Env):
 		if server == True:
 			os.environ["SDL_VIDEODRIVER"] = "dummy"
 
-		self.action_space = spaces.Discrete(2) # Flap or not flap, this could be 1
+		self.action_space = spaces.Discrete(10) # Weight the flap such that 1/10 action is to flap.
 		self.observation_space = spaces.Box(low = np.array([-np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf]), high = np.array([np.inf, np.inf, np.inf, np.inf, np.inf, np.inf]), dtype=np.uint8)
 		# self.observation_space = gym.spaces.Box(-np.inf, np.inf,
 		# 								shape=(2,),

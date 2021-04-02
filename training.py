@@ -24,14 +24,14 @@ def human_playing():
 def ai_playing():
 	env = flappy_env.FlappyEnv(server=True)
 	obs = env.reset()
-	model = PPO("MlpPolicy", env, verbose=1, learning_rate=1e-5, )
-	model.learn(total_timesteps=3e6)
-	model.save("fixedreward")
+	model = PPO("MlpPolicy", env, verbose=1, learning_rate=1e-5)
+	model.learn(total_timesteps=1e5)
+	model.save("fixedreward_lr_weightednototjump")
 
 	for i in range(1000):
 		# action, _state = model.predict(obs, deterministic=True)
 		action = env.action_space.sample()
-		print(action)
+		#print(action)
 		obs, reward, done, info = env.step(action)
 		env.render()
 		if done:
