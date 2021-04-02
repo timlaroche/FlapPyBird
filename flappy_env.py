@@ -39,7 +39,7 @@ class FlappyEnv(gym.Env):
 			os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 		self.action_space = spaces.Discrete(10) # Weight the flap such that 1/10 action is to flap.
-		self.observation_space = spaces.Box(low = np.array([-np.inf, -np.inf, -np.inf, -np.inf, -np.inf, -np.inf]), high = np.array([np.inf, np.inf, np.inf, np.inf, np.inf, np.inf]), dtype=np.uint8)
+		self.observation_space = spaces.Box(low = np.array([-np.inf, -np.inf, -np.inf]), high = np.array([np.inf, np.inf, np.inf]), dtype=np.uint8)
 		# self.observation_space = gym.spaces.Box(-np.inf, np.inf,
 		# 								shape=(2,),
 		# 								dtype=np.float32)
@@ -245,14 +245,17 @@ class FlappyEnv(gym.Env):
 		## [height of bird, (upper pipe coords), (lower pipe coords)]
 		## new obs, [height of bird, next upipex, next upipey, next lpipex, next lpipey]
 		obs.insert(0, self.playery)
+		pygame.display.update()
+		self.FPSCLOCK.tick(FPS)
 
 		return self.get_observation(), reward, not self.running, {} #obs, reward, done, info
 
 	def get_observation(self):
 		# [current y value, xcoord of mid pipe, y coord of mid pipe]
 		for i, (uPipe, lPipe) in enumerate(zip(self.upperPipes, self.lowerPipes)):
-			return[self.playery, self.playerx, uPipe['x'], uPipe['y'], lPipe['x'], lPipe['y']]
-
+			print(f"{[self.playery, lPipe['y']-self.playery, uPipe['x']]}")
+			return[self.playery, lPipe['y']-self.playery, uPipe['x']]
+			# return[self.playery, self.playerx, uPipe['x'], uPipe['y'], lPipe['x'], lPipe['y'], lPipe['y']-self.playery]
 
 
 	def reset(self):
