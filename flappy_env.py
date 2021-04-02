@@ -39,10 +39,13 @@ class FlappyEnv(gym.Env):
 			os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 		self.action_space = spaces.Discrete(10) # Weight the flap such that 1/10 action is to flap.
-		self.observation_space = spaces.Box(low = np.array([-np.inf, -np.inf, -np.inf]), high = np.array([np.inf, np.inf, np.inf]), dtype=np.uint8)
+		# self.observation_space = spaces.Box(low = np.array([-np.inf, -np.inf, -np.inf]), high = np.array([np.inf, np.inf, np.inf]), dtype=np.uint8)
+		#self.observation_space = spaces.Box(low = np.array([0, 0, 0]), high = np.array([SCREENHEIGHT, SCREENWIDTH, SCREENHEIGHT]), dtype=np.uint8)
+
 		# self.observation_space = gym.spaces.Box(-np.inf, np.inf,
 		# 								shape=(2,),
 		# 								dtype=np.float32)
+		self.observation_space = spaces.Box(0,255, [SCREENHEIGHT, SCREENWIDTH, 3])
 
 		pygame.init()
 		self.FPSCLOCK = pygame.time.Clock()
@@ -168,8 +171,6 @@ class FlappyEnv(gym.Env):
 			# 	'playerRot': self.playerRot,
 			# 	'done': True
 			# }
-		else:
-			reward += 0.1 # small reward for just surviving
 
 		# check for score
 		playerMidPos = self.playerx + IMAGES['player'][0].get_width() / 2
@@ -249,12 +250,28 @@ class FlappyEnv(gym.Env):
 		# self.FPSCLOCK.tick(FPS)
 		return self.get_observation(), reward, not self.running, {} #obs, reward, done, info
 
+	# def get_observation(self):
+	# 	# [current y value, xcoord of mid pipe, y coord of mid pipe]
+	# 	for i, (uPipe, lPipe) in enumerate(zip(self.upperPipes, self.lowerPipes)):
+	# 		# print(f"{[self.playery, lPipe['y']-self.playery, uPipe['x']]}")
+	# 		return[self.playery, lPipe['y']-self.playery, uPipe['x']]
+	# 		# return[self.playery, self.playerx, uPipe['x'], uPipe['y'], lPipe['x'], lPipe['y'], lPipe['y']-self.playery]
+
 	def get_observation(self):
-		# [current y value, xcoord of mid pipe, y coord of mid pipe]
-		for i, (uPipe, lPipe) in enumerate(zip(self.upperPipes, self.lowerPipes)):
-			# print(f"{[self.playery, lPipe['y']-self.playery, uPipe['x']]}")
-			return[self.playery, lPipe['y']-self.playery, uPipe['x']]
-			# return[self.playery, self.playerx, uPipe['x'], uPipe['y'], lPipe['x'], lPipe['y'], lPipe['y']-self.playery]
+		r_arr = []
+		g_arr = []
+		b_arr = []
+		for i in range(SCREENWIDTH):
+			for j in range(SCREENHEIGHT):
+				colour_tuple = self.SCREEN.get_at((i, j))
+				r = colour_tuple[0]
+				g = colour_tuple[1]
+				b = colour_tuple[2]
+				r_arr.append(r)
+				g_arr.append(g)
+				b_arr.append(b)
+				return [r,g,b]
+
 
 
 	def reset(self):

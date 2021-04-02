@@ -25,7 +25,7 @@ def ai_playing():
 	env = flappy_env.FlappyEnv(server=False)
 	obs = env.reset()
 	model = PPO("MlpPolicy", env, verbose=1, learning_rate=1e-5)
-	model.learn(total_timesteps=1e7)
+	model.learn(total_timesteps=1e5)
 	model.save("fixedreward_lr_weightednototjump_newobs")
 
 	# for i in range(1000):
@@ -36,5 +36,18 @@ def ai_playing():
 	# 	env.render()
 	# 	if done:
 	# 		env.reset()
+
+def ai_eval():
+	env = flappy_env.FlappyEnv(server=False)
+	model = PPO.load("./fixedreward_lr_weightednototjump", env=env)
+	obs = env.reset()
+	for i in range(1000):
+		action, _state = model.predict(obs, deterministic=True)
+		# action = env.action_space.sample()
+		#print(action)
+		obs, reward, done, info = env.step(action)
+		env.render()
+		if done:
+			env.reset()
 
 ai_playing()
