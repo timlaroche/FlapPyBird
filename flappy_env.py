@@ -109,6 +109,9 @@ class FlappyEnv(gym.Env):
 			self.getHitmask(IMAGES['player'][2]),
 		)
 
+		self.SCREEN.blit(IMAGES['background'], (0,0))
+		pygame.display.update()
+
 		# Game Settings
 		self.playerIndexGen = cycle([0, 1, 2, 1])
 		self.basex = 0
@@ -153,7 +156,7 @@ class FlappyEnv(gym.Env):
 							   self.upperPipes, self.lowerPipes)
 		if crashTest[0]:
 			self.running = False
-			reward = -100
+			reward -= 100
 			# return {
 			# 	'y': self.playery,
 			# 	'groundCrash': crashTest[1],
@@ -166,7 +169,7 @@ class FlappyEnv(gym.Env):
 			# 	'done': True
 			# }
 		else:
-			reward = 1
+			reward += 0.1 # small reward for just surviving
 
 		# check for score
 		playerMidPos = self.playerx + IMAGES['player'][0].get_width() / 2
@@ -174,7 +177,7 @@ class FlappyEnv(gym.Env):
 			pipeMidPos = pipe['x'] + IMAGES['pipe'][0].get_width() / 2
 			if pipeMidPos <= playerMidPos < pipeMidPos + 4:
 				self.score += 1
-				reward += 10
+				reward += 1
 				SOUNDS['point'].play()
 
 		# playerIndex basex change
@@ -322,7 +325,6 @@ class FlappyEnv(gym.Env):
 
 		# if player crashes into ground
 		if player['y'] + player['h'] >= BASEY - 1:
-			print("CRASHED INTO GROUND!!")
 			return [True, True]
 		else:
 
@@ -346,7 +348,6 @@ class FlappyEnv(gym.Env):
 				lCollide = self.pixelCollision(playerRect, lPipeRect, pHitMask, lHitmask)
 
 				if uCollide or lCollide:
-					print("CRASHED INTO pipe!!")
 					return [True, False]
 
 		return [False, False]
