@@ -245,9 +245,8 @@ class FlappyEnv(gym.Env):
 		## [height of bird, (upper pipe coords), (lower pipe coords)]
 		## new obs, [height of bird, next upipex, next upipey, next lpipex, next lpipey]
 		obs.insert(0, self.playery)
-		pygame.display.update()
-		self.FPSCLOCK.tick(FPS)
-
+		# pygame.display.update()
+		# self.FPSCLOCK.tick(FPS)
 		return self.get_observation(), reward, not self.running, {} #obs, reward, done, info
 
 	def get_observation(self):
