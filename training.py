@@ -3,7 +3,7 @@ import gym
 import flappy_env
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import VecVideoRecorder, DummyVecEnv
-
+from stable_baselines3.common.env_util import make_atari_env
 
 def human_playing():
 	env = flappy_env.FlappyEnv(server=False)

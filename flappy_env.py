@@ -272,14 +272,16 @@ class FlappyEnv(gym.Env):
 		# 		g_arr[i][j] = g
 		# 		b_arr[i][j] = b
 		# return [r_arr, g_arr, b_arr]
-		screen = np.empty(shape=(SCREENWIDTH, SCREENHEIGHT, 3))
-		for i in range(SCREENWIDTH):
-			for j in range(SCREENHEIGHT):
-				colourtuple = self.SCREEN.get_at((i, j))
-				screen[i][j][0] = colourtuple[0]
-				screen[i][j][1] = colourtuple[1]
-				screen[i][j][2] = colourtuple[2]
-		return screen
+		# 
+		# screen = np.empty(shape=(SCREENWIDTH, SCREENHEIGHT, 3))
+		# for i in range(SCREENWIDTH):
+		# 	for j in range(SCREENHEIGHT):
+		# 		colourtuple = self.SCREEN.get_at((i, j))
+		# 		screen[i][j][0] = colourtuple[0]
+		# 		screen[i][j][1] = colourtuple[1]
+		# 		screen[i][j][2] = colourtuple[2]
+		# return screen
+		return pygame.surfarray.array3d(pygame.display.get_surface())
 
 
 	def reset(self):
