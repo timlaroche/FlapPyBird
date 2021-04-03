@@ -45,7 +45,7 @@ class FlappyEnv(gym.Env):
 		# self.observation_space = gym.spaces.Box(-np.inf, np.inf,
 		# 								shape=(2,),
 		# 								dtype=np.float32)
-		self.observation_space = spaces.Box(0,255, [SCREENHEIGHT, SCREENWIDTH, 3])
+		self.observation_space = spaces.Box(low = 0, high = 255, shape = (SCREENHEIGHT, SCREENWIDTH, 3))
 
 		pygame.init()
 		self.FPSCLOCK = pygame.time.Clock()
@@ -143,7 +143,6 @@ class FlappyEnv(gym.Env):
 		self.lowerPipes = []
 
 	def step(self, action):
-		pygame.event.pump()
 		basex = self.basex
 		reward = 0.0
 		obs = list()
@@ -171,6 +170,8 @@ class FlappyEnv(gym.Env):
 			# 	'playerRot': self.playerRot,
 			# 	'done': True
 			# }
+		else:
+			reward += 0.1 # little bit of reward for surviving
 
 		# check for score
 		playerMidPos = self.playerx + IMAGES['player'][0].get_width() / 2
@@ -280,7 +281,7 @@ class FlappyEnv(gym.Env):
 		self.basex = 0
 		self.playerIndex = 0
 		self.playerIndexGen = cycle([0, 1, 2, 1])
-		self.score = 0
+		self.score = 9
 		self.running = True
 		obs = [0, 0, 0, 0, 0]
 
@@ -334,7 +335,7 @@ class FlappyEnv(gym.Env):
 
 		for digit in scoreDigits:
 			self.SCREEN.blit(IMAGES['numbers'][digit], (Xoffset, SCREENHEIGHT * 0.1))
-		Xoffset += IMAGES['numbers'][digit].get_width()
+			Xoffset += IMAGES['numbers'][digit].get_width()
 
 	def checkCrash(self, player, upperPipes, lowerPipes):
 		"""returns True if player collders with base or pipes."""
