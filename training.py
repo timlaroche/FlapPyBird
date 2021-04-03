@@ -4,6 +4,7 @@ import flappy_env
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import VecVideoRecorder, DummyVecEnv
 from stable_baselines3.common.env_util import make_atari_env
+from stable_baselines3.common.monitor import Monitor
 
 def human_playing():
 	env = flappy_env.FlappyEnv(server=False)
@@ -23,6 +24,7 @@ def human_playing():
 
 def ai_playing():
 	env = flappy_env.FlappyEnv(server=True)
+	env = Monitor(env, "here")
 	obs = env.reset()
 	model = PPO("CnnPolicy", env, verbose=1, learning_rate=1e-5)
 	model.learn(total_timesteps=1e6)
@@ -50,4 +52,4 @@ def ai_eval():
 		if done:
 			env.reset()
 
-ai_eval()
+ai_playing()
