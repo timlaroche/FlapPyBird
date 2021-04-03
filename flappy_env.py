@@ -47,7 +47,8 @@ class FlappyEnv(gym.Env):
 		# self.observation_space = gym.spaces.Box(-np.inf, np.inf,
 		# 								shape=(2,),
 		# 								dtype=np.float32)
-		self.observation_space = spaces.Box(low = 0, high = 255, shape = (SCREENWIDTH, SCREENHEIGHT, 3), dtype=np.uint8)
+		# self.observation_space = spaces.Box(low = 0, high = 255, shape = (SCREENWIDTH, SCREENHEIGHT, 3), dtype=np.uint8)
+		self.observation_space = spaces.Box(low = 0, high = 255, shape = (80, 80, 3), dtype=np.uint8)
 
 		pygame.init()
 		self.FPSCLOCK = pygame.time.Clock()
