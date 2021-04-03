@@ -294,7 +294,7 @@ class FlappyEnv(gym.Env):
 		self.basex = 0
 		self.playerIndex = 0
 		self.playerIndexGen = cycle([0, 1, 2, 1])
-		self.score = 9
+		self.score = 0
 		self.running = True
 		obs = [0, 0, 0, 0, 0]
 

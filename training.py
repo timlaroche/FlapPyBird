@@ -39,15 +39,15 @@ def ai_playing():
 
 def ai_eval():
 	env = flappy_env.FlappyEnv(server=False)
-	# model = PPO.load("./fixedreward_lr_weightednototjump", env=env)
+	model = PPO.load("./fixedreward_lr_weightednototjump_newobs_cnn", env=env)
 	obs = env.reset()
 	for i in range(1000):
-		# action, _state = model.predict(obs, deterministic=True)
-		action = env.action_space.sample()
+		action, _state = model.predict(obs, deterministic=True)
+		#action = env.action_space.sample()
 		#print(action)
 		obs, reward, done, info = env.step(action)
 		env.render()
 		if done:
 			env.reset()
 
-ai_playing()
+ai_eval()
