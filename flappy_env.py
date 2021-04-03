@@ -271,7 +271,7 @@ class FlappyEnv(gym.Env):
 				r_arr.append(r)
 				g_arr.append(g)
 				b_arr.append(b)
-				return [r_arr, g_arr, b_arr]
+		return [r_arr, g_arr, b_arr]
 
 
 
