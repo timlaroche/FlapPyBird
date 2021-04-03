@@ -25,7 +25,7 @@ def ai_playing():
 	env = flappy_env.FlappyEnv(server=True)
 	obs = env.reset()
 	model = PPO("CnnPolicy", env, verbose=1, learning_rate=1e-5)
-	model.learn(total_timesteps=1e5)
+	model.learn(total_timesteps=1e6)
 	model.save("fixedreward_lr_weightednototjump_newobs_cnn")
 
 	# for i in range(1000):
