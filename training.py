@@ -22,7 +22,7 @@ def human_playing():
 		env.close()
 
 def ai_playing():
-	env = flappy_env.FlappyEnv(server=False)
+	env = flappy_env.FlappyEnv(server=True)
 	obs = env.reset()
 	model = PPO("CnnPolicy", env, verbose=1, learning_rate=1e-5)
 	model.learn(total_timesteps=1e5)

@@ -45,7 +45,7 @@ class FlappyEnv(gym.Env):
 		# self.observation_space = gym.spaces.Box(-np.inf, np.inf,
 		# 								shape=(2,),
 		# 								dtype=np.float32)
-		self.observation_space = spaces.Box(low = 0, high = 255, shape = (SCREENHEIGHT, SCREENWIDTH, 3), dtype=np.uint8)
+		self.observation_space = spaces.Box(low = 0, high = 255, shape = (SCREENWIDTH, SCREENHEIGHT, 3), dtype=np.uint8)
 
 		pygame.init()
 		self.FPSCLOCK = pygame.time.Clock()
@@ -259,20 +259,27 @@ class FlappyEnv(gym.Env):
 	# 		# return[self.playery, self.playerx, uPipe['x'], uPipe['y'], lPipe['x'], lPipe['y'], lPipe['y']-self.playery]
 
 	def get_observation(self):
-		r_arr = []
-		g_arr = []
-		b_arr = []
+		# r_arr = np.empty([SCREENHEIGHT, SCREENHEIGHT])
+		# g_arr = np.empty([SCREENWIDTH, SCREENHEIGHT])
+		# b_arr = np.empty([SCREENWIDTH, SCREENHEIGHT])
+		# for i in range(SCREENWIDTH):
+		# 	for j in range(SCREENHEIGHT):
+		# 		colour_tuple = self.SCREEN.get_at((i, j))
+		# 		r = colour_tuple[0]
+		# 		g = colour_tuple[1]
+		# 		b = colour_tuple[2]
+		# 		r_arr[i][j] = r
+		# 		g_arr[i][j] = g
+		# 		b_arr[i][j] = b
+		# return [r_arr, g_arr, b_arr]
+		screen = np.empty(shape=(SCREENWIDTH, SCREENHEIGHT, 3))
 		for i in range(SCREENWIDTH):
 			for j in range(SCREENHEIGHT):
-				colour_tuple = self.SCREEN.get_at((i, j))
-				r = colour_tuple[0]
-				g = colour_tuple[1]
-				b = colour_tuple[2]
-				r_arr.append(r)
-				g_arr.append(g)
-				b_arr.append(b)
-		return [r_arr, g_arr, b_arr]
-
+				colourtuple = self.SCREEN.get_at((i, j))
+				screen[i][j][0] = colourtuple[0]
+				screen[i][j][1] = colourtuple[1]
+				screen[i][j][2] = colourtuple[2]
+		return screen
 
 
 	def reset(self):
