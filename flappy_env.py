@@ -12,6 +12,8 @@ from pygame.locals import *
 import flappy
 import numpy as np
 
+import cv2
+
 # GLOBALS
 FPS = 30
 SCREENWIDTH  = 288
