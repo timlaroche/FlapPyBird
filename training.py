@@ -26,7 +26,7 @@ def ai_playing():
 	env = flappy_env.FlappyEnv(server=True)
 	env = Monitor(env, "1e7_bw")
 	obs = env.reset()
-	model = DQN("CnnPolicy", env, verbose=1)
+	model = DQN("CnnPolicy", env, verbose=1, optimize_memory_usage=True, buffer_size = 500000)
 	model.learn(total_timesteps=1e7)
 	model.save("fixedreward_lr_weightednototjump_newobs_dqn1e7bw_cnn")
 
