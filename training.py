@@ -1,7 +1,7 @@
 from setuptools import setup
 import gym
 import flappy_env
-from stable_baselines3 import PPO
+from stable_baselines3 import PPO, DQN
 from stable_baselines3.common.vec_env import VecVideoRecorder, DummyVecEnv
 from stable_baselines3.common.env_util import make_atari_env
 from stable_baselines3.common.monitor import Monitor
@@ -24,11 +24,11 @@ def human_playing():
 
 def ai_playing():
 	env = flappy_env.FlappyEnv(server=True)
-	env = Monitor(env, "here")
+	env = Monitor(env, "1e7_bw")
 	obs = env.reset()
-	model = PPO("CnnPolicy", env, verbose=1)
-	model.learn(total_timesteps=1e8)
-	model.save("fixedreward_lr_weightednototjump_newobs_cnn")
+	model = DQN("CnnPolicy", env, verbose=1)
+	model.learn(total_timesteps=1e7)
+	model.save("fixedreward_lr_weightednototjump_newobs_dqn1e7bw_cnn")
 
 	# for i in range(1000):
 	# 	# action, _state = model.predict(obs, deterministic=True)

@@ -48,7 +48,7 @@ class FlappyEnv(gym.Env):
 		# 								shape=(2,),
 		# 								dtype=np.float32)
 		# self.observation_space = spaces.Box(low = 0, high = 255, shape = (SCREENWIDTH, SCREENHEIGHT, 3), dtype=np.uint8)
-		self.observation_space = spaces.Box(low = 0, high = 255, shape = (80, 80, 3), dtype=np.uint8)
+		self.observation_space = spaces.Box(low = 0, high = 255, shape = (80, 80, 1), dtype=np.uint8)
 
 		pygame.init()
 		self.FPSCLOCK = pygame.time.Clock()
@@ -286,7 +286,9 @@ class FlappyEnv(gym.Env):
 		# return screen
 		surf = pygame.surfarray.array3d(pygame.display.get_surface())
 		x = cv2.resize(surf, (80, 80)) # resize to 80x80
-		# print(x)
+		x = np.array(x, dtype=np.uint8)
+		x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
+		x = np.reshape(x, (80, 80, 1))
 		return x
 
 
