@@ -285,7 +285,9 @@ class FlappyEnv(gym.Env):
 		# 		screen[i][j][2] = colourtuple[2]
 		# return screen
 		surf = pygame.surfarray.array3d(pygame.display.get_surface())
-		return cv2.resize(surf, (80, 80)) # resize to 80x80
+		x = cv2.resize(surf, (80, 80)) # resize to 80x80
+		# print(x)
+		return x
 
 
 	def reset(self):
