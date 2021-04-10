@@ -10,6 +10,7 @@ def human_playing():
 	env = flappy_env.FlappyEnv(server=False)
 	env.reset()
 	env.step(action=[])
+	total_reward = 0
 	while env.running:
 		actions = env.get_actions()
 		obs, reward, done, info = env.step(action=actions)
@@ -20,11 +21,13 @@ def human_playing():
 			info: {info}
 			""")
 		env.render()
-		env.close()
+		total_reward += reward
+	env.close()
+	print(f"total_reward: {total_reward}")
 
-def ai_playing():
+def ai_playing_dqn():
 	env = flappy_env.FlappyEnv(server=True)
-	env = Monitor(env, "1e7_bw")
+	env = Monitor(env, "1e7_bw_dqn")
 	obs = env.reset()
 	model = DQN("CnnPolicy", env, verbose=1, optimize_memory_usage=True, buffer_size = 500000)
 	model.learn(total_timesteps=1e7)
@@ -39,9 +42,27 @@ def ai_playing():
 	# 	if done:
 	# 		env.reset()
 
+def ai_playing_ppo():
+	env = flappy_env.FlappyEnv(server=True)
+	env = Monitor(env, "1e7_bw_ppo")
+	obs = env.reset()
+	model = PPO("CnnPolicy", env, verbose=1, optimize_memory_usage=True, buffer_size = 500000)
+	model.learn(total_timesteps=1e7)
+	model.save("fixedreward_lr_weightednototjump_newobs_ppo1e7bw_cnn")
+
+	# for i in range(1000):
+	# 	# action, _state = model.predict(obs, deterministic=True)
+	# 	action = env.action_space.sample()
+	# 	#print(action)
+	# 	obs, reward, done, info = env.step(action)
+	# 	env.render()
+	# 	if done:
+	# 		env.reset()
+
 def ai_eval():
 	env = flappy_env.FlappyEnv(server=False)
-	model = PPO.load("./fixedreward_lr_weightednototjump_newobs_cnn", env=env)
+	# model = PPO.load("./fixedreward_lr_weightednototjump_newobs_cnn", env=env)
+	model = DQN.load("./1e7bwcnndqn", env=env)
 	obs = env.reset()
 	for i in range(1000):
 		action, _state = model.predict(obs, deterministic=True)
@@ -52,4 +73,4 @@ def ai_eval():
 		if done:
 			env.reset()
 
-ai_playing()
+ai_playing_ppo()
