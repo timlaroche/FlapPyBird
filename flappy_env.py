@@ -41,13 +41,6 @@ class FlappyEnv(gym.Env):
 			os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 		self.action_space = spaces.Discrete(10) # Weight the flap such that 1/10 action is to flap.
-		# self.observation_space = spaces.Box(low = np.array([-np.inf, -np.inf, -np.inf]), high = np.array([np.inf, np.inf, np.inf]), dtype=np.uint8)
-		#self.observation_space = spaces.Box(low = np.array([0, 0, 0]), high = np.array([SCREENHEIGHT, SCREENWIDTH, SCREENHEIGHT]), dtype=np.uint8)
-
-		# self.observation_space = gym.spaces.Box(-np.inf, np.inf,
-		# 								shape=(2,),
-		# 								dtype=np.float32)
-		# self.observation_space = spaces.Box(low = 0, high = 255, shape = (SCREENWIDTH, SCREENHEIGHT, 3), dtype=np.uint8)
 		self.observation_space = spaces.Box(low = 0, high = 255, shape = (80, 80, 1), dtype=np.uint8)
 
 		pygame.init()
@@ -162,19 +155,8 @@ class FlappyEnv(gym.Env):
 		if crashTest[0]:
 			self.running = False
 			reward -= 100
-			# return {
-			# 	'y': self.playery,
-			# 	'groundCrash': crashTest[1],
-			# 	'basex': self.basex,
-			# 	'upperPipes': self.upperPipes,
-			# 	'lowerPipes': self.lowerPipes,
-			# 	'score': self.score,
-			# 	'playerVelY': self.playerVelY,
-			# 	'playerRot': self.playerRot,
-			# 	'done': True
-			# }
 		else:
-			reward += 0.1 # little bit of reward for surviving
+			reward += 0.1 # Little bit of reward for surviving
 
 		# check for score
 		playerMidPos = self.playerx + IMAGES['player'][0].get_width() / 2
@@ -246,44 +228,9 @@ class FlappyEnv(gym.Env):
 		playerSurface = pygame.transform.rotate(IMAGES['player'][self.playerIndex], visibleRot)
 		self.SCREEN.blit(playerSurface, (self.playerx, self.playery))
 
-		## Observations; as a human we can see where the pipes are, we can see where the bird is. Return this.
-		## [height of bird, (upper pipe coords), (lower pipe coords)]
-		## new obs, [height of bird, next upipex, next upipey, next lpipex, next lpipey]
-		obs.insert(0, self.playery)
-		# pygame.display.update()
-		# self.FPSCLOCK.tick(FPS)
-		return self.get_observation(), reward, not self.running, {} #obs, reward, done, info
-
-	# def get_observation(self):
-	# 	# [current y value, xcoord of mid pipe, y coord of mid pipe]
-	# 	for i, (uPipe, lPipe) in enumerate(zip(self.upperPipes, self.lowerPipes)):
-	# 		# print(f"{[self.playery, lPipe['y']-self.playery, uPipe['x']]}")
-	# 		return[self.playery, lPipe['y']-self.playery, uPipe['x']]
-	# 		# return[self.playery, self.playerx, uPipe['x'], uPipe['y'], lPipe['x'], lPipe['y'], lPipe['y']-self.playery]
+		return self.get_observation(), reward, not self.running, {} # obs, reward, done, info
 
 	def get_observation(self):
-		# r_arr = np.empty([SCREENHEIGHT, SCREENHEIGHT])
-		# g_arr = np.empty([SCREENWIDTH, SCREENHEIGHT])
-		# b_arr = np.empty([SCREENWIDTH, SCREENHEIGHT])
-		# for i in range(SCREENWIDTH):
-		# 	for j in range(SCREENHEIGHT):
-		# 		colour_tuple = self.SCREEN.get_at((i, j))
-		# 		r = colour_tuple[0]
-		# 		g = colour_tuple[1]
-		# 		b = colour_tuple[2]
-		# 		r_arr[i][j] = r
-		# 		g_arr[i][j] = g
-		# 		b_arr[i][j] = b
-		# return [r_arr, g_arr, b_arr]
-		# 
-		# screen = np.empty(shape=(SCREENWIDTH, SCREENHEIGHT, 3))
-		# for i in range(SCREENWIDTH):
-		# 	for j in range(SCREENHEIGHT):
-		# 		colourtuple = self.SCREEN.get_at((i, j))
-		# 		screen[i][j][0] = colourtuple[0]
-		# 		screen[i][j][1] = colourtuple[1]
-		# 		screen[i][j][2] = colourtuple[2]
-		# return screen
 		surf = pygame.surfarray.array3d(pygame.display.get_surface())
 		x = cv2.resize(surf, (80, 80)) # resize to 80x80
 		x = np.array(x, dtype=np.uint8)
@@ -325,8 +272,7 @@ class FlappyEnv(gym.Env):
 		pygame.display.update()
 		self.FPSCLOCK.tick(FPS)
 
-	# helper functions
-
+	# Helper functions
 	def getRandomPipe(self):
 		"""returns a randomly generated pipe"""
 		# y of gap between upper and lower pipe
