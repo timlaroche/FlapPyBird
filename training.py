@@ -50,9 +50,9 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 	import flappy_env # Import here so argparse loads faster
 	if args.algorithm == "ppo":
-		train_dqn(0) 
+		train_ppo(0) 
 	elif args.algorithm == "dqn":
-		train_ppo(0)
+		train_dqn(0)
 	elif args.algorithm == "ultimate":
 		ultimate_training()
 
